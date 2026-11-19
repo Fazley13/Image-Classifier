@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Image Classifier</title>
+  <meta name="description" content="Drop in a photo and see what MobileNetV2 thinks it shows.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232B3AD9'/%3E%3Cpath d='M8 13V8h5M24 13V8h-5M8 19v5h5M24 19v5h-5' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='square'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23FFD84D'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <a class="brand" href="/" aria-label="Image Classifier home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M6 12V6h6M26 12V6h-6M6 20v6h6M26 20v6h-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/>
+          <circle cx="16" cy="16" r="3.2" fill="var(--mark)"/>
+        </svg>
+        <span>Image Classifier</span>
+      </a>
+      <div class="model-status" id="modelStatus" data-state="loading" role="status">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="modelStatusText">Starting model</span>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="stage" aria-label="Your images">
+        <input type="file" id="fileInput" accept="image/*" multiple hidden>
+
+        <div class="slide" id="slide" data-empty="true" data-drag="false" data-crop="on">
+          <i class="mark tl" aria-hidden="true"></i><i class="mark tr" aria-hidden="true"></i>
+          <i class="mark bl" aria-hidden="true"></i><i class="mark br" aria-hidden="true"></i>
+
+          <button type="button" class="drop" id="dropBtn">
+            <svg class="drop-icon" viewBox="0 0 48 48" aria-hidden="true">
+              <rect x="6" y="10" width="36" height="28" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/>
+              <path d="M6 33l10-10 8 8 6-6 12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+              <circle cx="32" cy="19" r="3" fill="var(--mark)" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span class="drop-title">Drop images here</span>
+            <span class="drop-hint">or click to choose files. You can also paste with Ctrl+V.</span>
+            <span class="btn btn-primary drop-cta">Choose images</span>
+          </button>
+
+          <div class="photo" id="photo" hidden>
+            <img id="preview" alt="">
+            <div class="crop" aria-hidden="true"></div>
+            <div class="scan" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <div class="toolbar" id="toolbar" hidden>
+          <p class="photo-info" id="photoInfo"></p>
+          <div class="toolbar-actions">
+            <button type="button" class="btn" id="cropToggle" aria-pressed="true"
+              title="The dashed square is the area the model looks at">Analyzed area</button>
+            <button type="button" class="btn" id="addBtn">Add images</button>
+            <button type="button" class="btn btn-quiet" id="clearBtn">Clear all</button>
+          </div>
+        </div>
+
+        <ul class="strip" id="strip" aria-label="Uploaded images" hidden></ul>
+        <p class="notice" id="notice" role="status" hidden></p>
+      </section>
+
+      <section class="results" id="results" aria-live="polite" aria-busy="false"></section>
+    </main>
+
+    <footer class="foot">
+      <p>Runs on your computer. Images are analyzed in memory and never saved. Files up to {{ max_upload_mb }} MB.</p>
+    </footer>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
